@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { addToDo, setTodos } from "./actions/toDoActions";
@@ -18,11 +18,7 @@ const TodoContainer: React.FC = (props: any) => {
   const dataUrl =
     "https://my-json-server.typicode.com/sushiie/mock-todo-backend/data";
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = () => {
+  const fetchData = useCallback(() => {
     setLoader(true);
     axios
       .get(dataUrl)
@@ -34,7 +30,11 @@ const TodoContainer: React.FC = (props: any) => {
       .finally(() => {
         setLoader(false);
       });
-  };
+  }, []);
+  
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const handleAddition = () => {
     const newTodo: IToDoItem = {
